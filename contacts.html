@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameAI - Контакты</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">🎮 GameAI</a>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-button">Главная</a></li>
+            <li><a href="games.html" class="nav-button">Игры</a></li>
+            <li><a href="create-game.html" class="nav-button">Создать игру</a></li>
+            <li><a href="my-games.html" class="nav-button">Мои игры</a></li>
+            <li><a href="contacts.html" class="nav-button">Контакты</a></li>
+            <!-- УБРАЛИ: <li><a href="gallery.html" class="nav-button">Галерея</a></li> -->
+        </ul>
+    </div>
+</nav>
+
+    <div class="container">
+        <h1 class="fade-in">Свяжитесь с нами</h1>
+        
+        <div class="card-grid">
+            <div class="card fade-in">
+                <h3>📧 Email</h3>
+                <p>demidmatycin@gmail.com</p>
+                <button onclick="window.location.href='mailto:demidmatycin@gmail.com'" class="btn">Написать письмо</button>
+            </div>
+            
+            <div class="card fade-in">
+                <h3>📱 Социальные сети</h3>
+                <ul>
+                    <li>Telegram: @gameai_support</li>
+                    <li>VK: vk.com/gameai_official</li>
+                    <li>Discord: GameAI Community</li>
+                </ul>
+            </div>
+
+            <div class="card fade-in">
+                <h3>📍 Адрес</h3>
+                <p>Россия, Москва</p>
+                <p>Колледж информатики и программирования</p>
+            </div>
+        </div>
+
+        <!-- Форма обратной связи -->
+        <section class="section">
+            <h2>Форма обратной связи</h2>
+            <div class="card fade-in">
+                <form onsubmit="event.preventDefault(); alert('Спасибо! Ваше сообщение отправлено.');">
+                    <div class="form-group">
+                        <label for="name">Ваше имя</label>
+                        <input type="text" id="name" placeholder="Иван Иванов" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="example@mail.ru" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Сообщение</label>
+                        <textarea id="message" rows="5" placeholder="Напишите ваш вопрос или предложение..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">📤 Отправить сообщение</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Карта (заглушка) -->
+        <section class="section">
+            <h2>Мы на карте</h2>
+            <div class="card">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2245.289778776798!2d37.6173!3d55.7558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTXCsDQ1JzIwLjkiTiAzN8KwMzcnMDIuMyJF!5e0!3m2!1sru!2sru!4v1600000000000!5m2!1sru!2sru" 
+                    width="100%" height="400" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 GameAI | Профессиональные HTML5 игры</p>
+    </div>
+</body>
+</html>

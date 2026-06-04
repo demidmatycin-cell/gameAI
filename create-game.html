@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать игру - GameAI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #00ff88;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 2rem;
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+        }
+        .nav-button {
+            background: transparent;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+        .nav-button:hover {
+            background: #00ff88;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+        .form-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .btn {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            display: block;
+            margin: 2rem auto 0;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 255, 136, 0.2);
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .result {
+            display: none;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .result h2 {
+            color: #00ff88;
+            margin-bottom: 1rem;
+        }
+        .game-preview {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            margin: 1rem 0;
+            background: #000;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #00ff88;
+            border: 2px solid #00ff88;
+        }
+        .btn-secondary:hover {
+            background: #00ff88;
+            color: #000;
+        }
+        .examples {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .examples h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+        .examples ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .examples li {
+            padding: 0.5rem 0;
+            color: #ccc;
+        }
+        .examples li:before {
+            content: "💡 ";
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">🎮 GameAI</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-button">Главная</a></li>
+                <li><a href="games.html" class="nav-button">Игры</a></li>
+                <li><a href="create-game.html" class="nav-button">Создать игру</a></li>
+                <li><a href="my-games.html" class="nav-button">Мои игры</a></li>
+                <li><a href="contacts.html" class="nav-button">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>🚀 Создать игру с ИИ</h1>
+        <p class="subtitle">Опиши свою идею, а ИИ создаст полноценную игру!</p>
+
+        <div class="examples">
+            <h3>Примеры идей для игр:</h3>
+            <ul>
+                <li>"Космический шутер с волнами врагов и боссом"</li>
+                <li>"Платформер с прыжками по платформам и сбором монет"</li>
+                <li>"Гонки с препятствиями и ускорением"</li>
+                <li>"Аркада с падающими объектами и отскоком"</li>
+                <li>"Змейка с ускорением и препятствиями"</li>
+            </ul>
+        </div>
+
+        <div class="form-card">
+            <form id="gameCreateForm">
+                <div class="form-group">
+                    <label for="gameName">Название игры *</label>
+                    <input type="text" id="gameName" placeholder="Например: Космические приключения" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gameGenre">Жанр игры</label>
+                    <select id="gameGenre">
+                        <option value="shooter">Шутер</option>
+                        <option value="platformer">Платформер</option>
+                        <option value="racing">Гонки</option>
+                        <option value="arcade">Аркада</option>
+                        <option value="puzzle">Головоломка</option>
+                        <option value="other">Другое</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gameIdea">Описание идеи игры *</label>
+                    <textarea id="gameIdea" placeholder="Опиши подробно:&#10;- Какой жанр игры&#10;- Какое управление (стрелки, мышь, пробел)&#10;- Что нужно делать в игре&#10;- Какие есть враги/препятствия&#10;- Как побеждать&#10;- Визуальный стиль (цвета, графика)&#10;- Любые дополнительные идеи..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Сложность</label>
+                    <select id="difficulty">
+                        <option value="easy">Легкая</option>
+                        <option value="medium" selected>Средняя</option>
+                        <option value="hard">Сложная</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" id="createBtn">
+                    ✨ Создать игру с ИИ
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="font-size: 1.2rem; color: #00ff88;">ИИ создаёт вашу игру...</p>
+                <p style="color: #888; margin-top: 0.5rem;">Это может занять 30-60 секунд</p>
+            </div>
+
+            <div class="result" id="result">
+                <h2>✅ Игра создана!</h2>
+                <p style="margin-bottom: 1rem;">Ваша игра готова. Протестируйте её и сохраните!</p>
+                <iframe id="gamePreview" class="game-preview"></iframe>
+                <div class="action-buttons">
+                    <button onclick="saveGame()" class="btn">💾 Сохранить игру</button>
+                    <button onclick="downloadGame()" class="btn btn-secondary">📥 Скачать HTML</button>
+                    <button onclick="createNew()" class="btn btn-secondary">🔄 Создать новую</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let generatedGameCode = '';
+        let gameData = {};
+
+        document.getElementById('gameCreateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const gameName = document.getElementById('gameName').value;
+            const genre = document.getElementById('gameGenre').value;
+            const idea = document.getElementById('gameIdea').value;
+            const difficulty = document.getElementById('difficulty').value;
+
+            // Показываем загрузку
+            document.getElementById('createBtn').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            // Формируем промт для ИИ
+            const prompt = `Создай полноценную HTML5 игру на JavaScript с использованием Canvas.
+
+НАЗВАНИЕ: ${gameName}
+ЖАНР: ${genre}
+СЛОЖНОСТЬ: ${difficulty}
+
+ОПИСАНИЕ ИДЕИ:
+${idea}
+
+ТРЕБОВАНИЯ:
+1. Игра должна быть в ОДНОМ HTML файле
+2. Используй HTML5 Canvas для рендеринга
+3. Добавь красивый визуальный стиль с цветами
+4. Реализуй плавное управление (клавиатура или мышь)
+5. Добавь систему очков и рекордов (localStorage)
+6. Сделай экран начала игры с кнопкой "Начать"
+7. Сделай экран окончания игры с кнопкой "Играть снова"
+8. Добавь инструкции по управлению
+9. Игра должна быть полностью играбельной
+10. Размер canvas: 800x600
+
+ВАЖНО: Верни ТОЛЬКО готовый HTML код игры, начиная с <!DOCTYPE html> и заканчивая </html>. Без пояснений и markdown.`;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/generate-game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        prompt: prompt,
+                        gameName: gameName,
+                        genre: genre,
+                        difficulty: difficulty
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.game_code) {
+                    generatedGameCode = data.game_code;
+                    gameData = {
+                        name: gameName,
+                        genre: genre,
+                        difficulty: difficulty,
+                        idea: idea,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // Показываем превью
+                    document.getElementById('gamePreview').srcdoc = generatedGameCode;
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('result').style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Ошибка генерации');
+                }
+            } catch (error) {
+                alert('Ошибка: ' + error.message);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('createBtn').style.display = 'block';
+            }
+        });
+
+        function saveGame() {
+            if (!generatedGameCode) return;
+
+            // Сохраняем в localStorage
+            const userGames = JSON.parse(localStorage.getItem('userGames') || '[]');
+            const gameId = Date.now();
+            
+            userGames.push({
+                id: gameId,
+                ...gameData,
+                code: generatedGameCode
+            });
+
+            localStorage.setItem('userGames', JSON.stringify(userGames));
+            alert('✅ Игра сохранена! Теперь она доступна в разделе "Мои игры"');
+        }
+
+        function downloadGame() {
+            if (!generatedGameCode) return;
+
+            const blob = new Blob([generatedGameCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = gameData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function createNew() {
+            document.getElementById('gameCreateForm').reset();
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('createBtn').style.display = 'block';
+            generatedGameCode = '';
+            gameData = {};
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

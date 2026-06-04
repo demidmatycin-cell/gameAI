@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои игры - GameAI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #00ff88;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 2rem;
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+        }
+        .nav-button {
+            background: transparent;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+        .nav-button:hover {
+            background: #00ff88;
+            color: #000;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 3rem;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: 0.3s;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+        .game-card h3 {
+            color: #00ff88;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .game-card p {
+            color: #aaa;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        .game-card .genre {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        .game-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            flex: 1;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-danger {
+            background: #ff0044;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #ff4466;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #888;
+        }
+        .empty-state h2 {
+            color: #00ff88;
+            margin-bottom: 1rem;
+        }
+        .create-link {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .create-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">🎮 GameAI</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-button">Главная</a></li>
+                <li><a href="games.html" class="nav-button">Игры</a></li>
+                <li><a href="create-game.html" class="nav-button">Создать игру</a></li>
+                <li><a href="my-games.html" class="nav-button">Мои игры</a></li>
+                <li><a href="contacts.html" class="nav-button">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>🎮 Мои игры</h1>
+        <p class="subtitle">Игры, созданные вами с помощью ИИ</p>
+
+        <div id="gamesList" class="games-grid">
+            <!-- Игры будут загружены здесь -->
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h2>У вас пока нет созданных игр</h2>
+            <p style="margin-bottom: 2rem;">Создайте свою первую игру с помощью ИИ!</p>
+            <a href="create-game.html" class="create-link" style="font-size: 1.2rem;">✨ Создать игру</a>
+        </div>
+    </div>
+
+    <script>
+        function loadGames() {
+            const userGames = JSON.parse(localStorage.getItem('userGames') || '[]');
+            const gamesList = document.getElementById('gamesList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (userGames.length === 0) {
+                gamesList.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            gamesList.style.display = 'grid';
+            emptyState.style.display = 'none';
+            gamesList.innerHTML = '';
+
+            // Сортируем по дате (новые сверху)
+            userGames.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            userGames.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                
+                const date = new Date(game.createdAt).toLocaleDateString('ru-RU');
+                
+                card.innerHTML = `
+                    <h3>${game.name}</h3>
+                    <p><strong>Жанр:</strong> <span class="genre">${getGenreName(game.genre)}</span></p>
+                    <p><strong>Сложность:</strong> ${getDifficultyName(game.difficulty)}</p>
+                    <p><strong>Создана:</strong> ${date}</p>
+                    <p style="margin-top: 1rem; color: #ccc; font-size: 0.85rem;">${game.idea.substring(0, 100)}...</p>
+                    <div class="game-actions">
+                        <button onclick="playGame(${game.id})" class="btn">▶ Играть</button>
+                        <button onclick="downloadGame(${game.id})" class="btn">📥 Скачать</button>
+                        <button onclick="deleteGame(${game.id})" class="btn btn-danger">🗑️ Удалить</button>
+                    </div>
+                `;
+                
+                gamesList.appendChild(card);
+            });
+        }
+
+        function getGenreName(genre) {
+            const genres = {
+                'shooter': 'Шутер',
+                'platformer': 'Платформер',
+                'racing': 'Гонки',
+                'arcade': 'Аркада',
+                'puzzle': 'Головоломка',
+                'other': 'Другое'
+            };
+            return genres[genre] || genre;
+        }
+
+        function getDifficultyName(difficulty) {
+            const difficulties = {
+                'easy': 'Легкая',
+                'medium': 'Средняя',
+                'hard': 'Сложная'
+            };
+            return difficulties[difficulty] || difficulty;
+        }
+
+        function playGame(gameId) {
+            const userGames = JSON.parse(localStorage.getItem('userGames') || '[]');
+            const game = userGames.find(g => g.id === gameId);
+            
+            if (game) {
+                // Открываем игру в новом окне
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(game.code);
+                newWindow.document.close();
+            }
+        }
+
+        function downloadGame(gameId) {
+            const userGames = JSON.parse(localStorage.getItem('userGames') || '[]');
+            const game = userGames.find(g => g.id === gameId);
+            
+            if (game) {
+                const blob = new Blob([game.code], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = game.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function deleteGame(gameId) {
+            if (confirm('Вы уверены, что хотите удалить эту игру?')) {
+                let userGames = JSON.parse(localStorage.getItem('userGames') || '[]');
+                userGames = userGames.filter(g => g.id !== gameId);
+                localStorage.setItem('userGames', JSON.stringify(userGames));
+                loadGames();
+            }
+        }
+
+        // Загружаем игры при открытии страницы
+        loadGames();
+    </script>
+</body>
+</html>
